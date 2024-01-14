@@ -32,7 +32,7 @@ func (repo JobRepositoryDb) Insert(job *domain.Job) (*domain.Job, error) {
 func (repo JobRepositoryDb) Find(id string) (*domain.Job, error) {
 	var job domain.Job
 
-	repo.Db.First(&job, "id = ?", id)
+	repo.Db.Preload("Video").First(&job, "id = ?", id)
 
 	if job.ID == "" {
 		return nil, fmt.Errorf("job does not exist")
