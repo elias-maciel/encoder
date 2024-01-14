@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/asaskevich/govalidator"
+	uuid "github.com/satori/go.uuid"
 )
 
 func init() {
@@ -16,9 +17,33 @@ type Job struct {
 	Status           string    `valid:"notnull"`
 	Video            *Video    `valid:"-"`
 	VideoID          string    `valid:"-"`
-	Error            string    `valid:"notnull"`
+	Error            string    `valid:"-"`
 	CreatedAt        time.Time `valid:"-"`
 	UpdatedAt        time.Time `valid:"-"`
+}
+
+func NewJob(output string, status string, video *Video) (*Job, error) {
+	job := Job{
+		OutputBucketPath: output,
+		Status:           status,
+		Video:            video,
+	}
+
+	job.prepare()
+
+	err := job.Validate()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &job, nil
+}
+
+func (job *Job) prepare() {
+	job.ID = uuid.NewV4().String()
+	job.CreatedAt = time.Now()
+	job.UpdatedAt = time.Now()
 }
 
 func (job *Job) Validate() error {
