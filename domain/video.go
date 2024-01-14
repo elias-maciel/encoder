@@ -1,17 +1,17 @@
 package domain
 
 import (
-	"time"
 	"github.com/asaskevich/govalidator"
+	"time"
 )
 
 type Video struct {
-	ID         string `valid:"uuid"`
-	ResourceID string `valid:"notnull"`
-	FilePath   string `valid:"notnull"`
-	CreatedAt  time.Time `valid:"-"`
+	ID         string    `json:"encoded_video_folder" valid:"uuid" gorm:"type:uuid;primary_key"`
+	ResourceID string    `json:"resource_id" valid:"notnull" gorm:"type:varchar(255)"`
+	FilePath   string    `json:"file_path" valid:"notnull" gorm:"type:varchar(255)"`
+	CreatedAt  time.Time `json:"-" valid:"-"`
+	Jobs       []*Job    `json:"-" valid:"-" gorm:"ForeignKey:VideoID"`
 }
-
 
 func init() {
 	govalidator.SetFieldsRequiredByDefault(true)
