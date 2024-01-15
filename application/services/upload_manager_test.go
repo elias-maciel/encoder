@@ -43,5 +43,5 @@ func TestVideoServiceUpload(t *testing.T) {
 	go videoUpload.ProcessUpload(50, doneUpload)
 
 	result := <- doneUpload
-	require.Equal(result, "upload completed")
+	require.Equal(t, result, "upload completed")
 }
