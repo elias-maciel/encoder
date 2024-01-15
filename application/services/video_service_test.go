@@ -44,4 +44,7 @@ func TestVideoServiceDownload(t *testing.T) {
 
 	err := videoService.Download("elias-maciel-test")
 	require.Nil(t, err)
+
+	err = videoService.Fragment()
+	require.Nil(t, err)
 }
