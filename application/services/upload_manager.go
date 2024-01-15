@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"cloud.google.com/go/storage"
@@ -24,7 +25,7 @@ func (vu *VideoUpload) UploadObject(objectpath string, client *storage.Client, c
 	path := strings.Split(objectpath, os.Getenv("localStoragePath")+"/")
 	f, err := os.Open(objectpath)
 
-	if err != nil{
+	if err != nil {
 		return err
 	}
 
@@ -42,4 +43,32 @@ func (vu *VideoUpload) UploadObject(objectpath string, client *storage.Client, c
 	}
 
 	return nil
+}
+
+func (vu *VideoUpload) loadPaths() error {
+	err := filepath.Walk(vu.VideoPath, func(path string, info os.FileInfo, err error) error {
+		if !info.IsDir() {
+			vu.Paths = append(vu.Paths, path)
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func getClientUpload() (*storage.Client, context.Context, error) {
+	ctx := context.Background()
+
+	client, err := storage.NewClient(ctx)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return client, ctx, nil
 }
